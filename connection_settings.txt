@@ -1,0 +1,24 @@
+id: cinera
+pass: Nomeacuerdo123
+
+
+ssh:
+cinera@fsprime.cse.usf.edu
+
+filezilla server:
+sftp://fsprime.cse.usf.edu
+
+22 or 23
+
+
+cd Documents/grey_level_color_opencv/iptools/;
+make clean;
+make;
+cd ../project/;
+make clean;
+make;
+cd bin/;
+./iptool parameters.txt;
+
+
+/home/c/cinera/Documents/grey_level_color_opencv/project/bin
