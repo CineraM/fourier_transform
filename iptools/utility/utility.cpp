@@ -13,6 +13,10 @@ string TEMP_PGM = "temp.pgm";
 string TEMP_PPM = "temp.ppm";
 string TEMP_PNG = "temp.png";
 
+cv::Mat computeDFT(Mat image);
+void fftShift(Mat magI);
+void lowpassFilter(const cv::Mat &dft_Filter, int distance);
+
 int utility::checkValue(int value)
 {
 	if (value > MAXRGB)
@@ -581,33 +585,213 @@ void utility::fourierTrans(string src, image &tgt)
 	std::remove(TEMP_PGM.c_str());
 }
 
+void utility::fourierTransROI(image &src, image &tgt, string tgtfile,
+	int roi_i, int roi_j, int roi_i_size, int roi_j_size)
+{
+	roi(src, temp1, roi_i, roi_j, roi_i_size, roi_j_size);
+	temp1.save(TEMP_PGM.c_str());
+	fourierTrans(TEMP_PGM, tgt);
+	// std::remove(TEMP_PGM.c_str());
+}
+
+void utility::fourierTransWrapper(image &src, image &tgt, string tgtfile,
+	int roi_i, int roi_j, int roi_i_size, int roi_j_size)
+{
+	roi(src, temp1, roi_i, roi_j, roi_i_size, roi_j_size);
+	temp1.save(TEMP_PPM.c_str());
+	fourierTrans(TEMP_PPM, temp2);
+	std::remove(TEMP_PPM.c_str());
+	mergeRoi(src, temp2, tgt, roi_i, roi_j, roi_i_size, roi_j_size);
+}
+
+
+// Compute the Discrete fourier transform
+cv::Mat computeDFT(Mat image) {
+    Mat padded;                            //expand input image to optimal size
+    int m = getOptimalDFTSize( image.rows );
+    int n = getOptimalDFTSize( image.cols ); // on the border add zero values
+    copyMakeBorder(image, padded, 0, m - image.rows, 0, n - image.cols, BORDER_CONSTANT, Scalar::all(0));
+    Mat planes[] = {Mat_<float>(padded), Mat::zeros(padded.size(), CV_32F)};
+    Mat complex;
+    merge(planes, 2, complex);         // Add to the expanded another plane with zeros
+    dft(complex, complex, DFT_COMPLEX_OUTPUT);  // fourier transform
+    return complex;
+}
+
+// https://datahacker.rs/opencv-discrete-fourier-transform-part2/#id1
+// create an ideal low pass filter
+void lowpassFilter(const cv::Mat &dft_Filter, int distance)
+{
+    Mat tmp = Mat(dft_Filter.rows, dft_Filter.cols, CV_32F);
+
+    Point centre = Point(dft_Filter.rows / 2, dft_Filter.cols / 2);
+    double radius;
+
+    for(int i = 0; i < dft_Filter.rows; i++)
+    {
+        for(int j = 0; j < dft_Filter.cols; j++)
+        {
+            radius = (double) sqrt(pow((i - centre.x), 2.0) + pow((double) (j - centre.y), 2.0));
+            if(radius>distance){
+                tmp.at<float>(i,j) = (float)0;
+            }else{
+                tmp.at<float>(i,j) = (float)1;
+            }
+
+        }
+    }
+
+    Mat toMerge[] = {tmp, tmp};
+    merge(toMerge, 2, dft_Filter);
+}
+
+void fftShift(Mat magI) 
+{
+    // crop if it has an odd number of rows or columns
+    magI = magI(Rect(0, 0, magI.cols & -2, magI.rows & -2));
+
+    int cx = magI.cols/2;
+    int cy = magI.rows/2;
+
+    Mat q0(magI, Rect(0, 0, cx, cy));   // Top-Left - Create a ROI per quadrant
+    Mat q1(magI, Rect(cx, 0, cx, cy));  // Top-Right
+    Mat q2(magI, Rect(0, cy, cx, cy));  // Bottom-Left
+    Mat q3(magI, Rect(cx, cy, cx, cy)); // Bottom-Right
+
+    Mat tmp;                            // swap quadrants (Top-Left with Bottom-Right)
+    q0.copyTo(tmp);
+    q3.copyTo(q0);
+    tmp.copyTo(q3);
+
+    q1.copyTo(tmp);                     // swap quadrant (Top-Right with Bottom-Left)
+    q2.copyTo(q1);
+    tmp.copyTo(q2);
+}
+
+void highpassFilter(Mat &dft_Filter, int distance)
+{
+    Mat tmp = Mat(dft_Filter.rows, dft_Filter.cols, CV_32F);
+
+    Point centre = Point(dft_Filter.rows / 2, dft_Filter.cols / 2);
+    double radius;
+
+    for(int i = 0; i < dft_Filter.rows; i++)
+    {
+        for(int j = 0; j < dft_Filter.cols; j++)
+        {
+            radius = (double) sqrt(pow((i - centre.x), 2.0) + pow((double) (j - centre.y), 2.0));
+            if(radius>distance){
+                tmp.at<float>(i,j) = (float)1;
+            }else{
+                tmp.at<float>(i,j) = (float)0;
+            }
+
+        }
+    }
+
+    Mat toMerge[] = {tmp, tmp};
+    merge(toMerge, 2, dft_Filter);
+}
 
 // Function to apply inverse Fourier transform to an image
-void utility::inverseFourierTrans(string src, image &tgt) 
+void utility::lowPass(string src, image &tgt, int radius) 
 {
-	Mat magnitude_image = imread(src, IMREAD_GRAYSCALE);
-    // Convert the magnitude image back to float
-    Mat magnitude;
-    magnitude_image.convertTo(magnitude, CV_32F);
+    cv::Mat img, complexImg, filter, filterOutput, imgOutput, planes[2];
 
-    // Reverse the log scale and normalize
-    magnitude = (magnitude - 1);
-    exp(magnitude, magnitude);
-    
-    // Create a complex image from the magnitude
-    Mat complexImage(magnitude.size(), CV_32F, Scalar(0));
-    Mat planes[] = { magnitude, Mat::zeros(magnitude.size(), CV_32F) };
-    merge(planes, 2, complexImage);
+    img = imread(src, 0);
 
-    // Perform the inverse Fourier transform
-    Mat invertedImage;
-    idft(complexImage, invertedImage, DFT_REAL_OUTPUT);
+    complexImg = computeDFT(img);
+    filter = complexImg.clone();
 
-    // Normalize the result to 0-255 range
-    normalize(invertedImage, invertedImage, 0, 255, NORM_MINMAX);
-    invertedImage.convertTo(invertedImage, CV_8U);
+    lowpassFilter(filter, radius); // create an ideal low pass filter
 
-    imwrite(TEMP_PGM, invertedImage);
+    fftShift(complexImg); // rearrage quadrants
+    mulSpectrums(complexImg, filter, complexImg, 0); // multiply 2 spectrums
+    fftShift(complexImg); // rearrage quadrants
+
+    // compute inverse
+    idft(complexImg, complexImg);
+
+    split(complexImg, planes);
+    normalize(planes[0], imgOutput, 0, 1, NORM_MINMAX);
+
+    split(filter, planes);
+    normalize(planes[1], filterOutput, 0, 1, NORM_MINMAX);
+
+    // imwrite("Filter.pgm", filterOutput*255);			// Debug
+    // imwrite("Low_pass_filter.pgm", imgOutput*255);	// Debug
+    imwrite(TEMP_PGM, imgOutput*255);
 	save_to_tgt(TEMP_PGM, tgt);
 	std::remove(TEMP_PGM.c_str());
+}
+
+void utility::lowPassROI(image &src, image &tgt, string tgtfile,
+	int radius, int roi_i, int roi_j, int roi_i_size, int roi_j_size)
+{
+	roi(src, temp1, roi_i, roi_j, roi_i_size, roi_j_size);
+	temp1.save(TEMP_PGM.c_str());
+	lowPass(TEMP_PGM, tgt, radius);
+	// std::remove(TEMP_PGM.c_str());
+}
+
+void utility::lowPassWrapper(image &src, image &tgt, string tgtfile,
+	int radius, int roi_i, int roi_j, int roi_i_size, int roi_j_size)
+{
+	roi(src, temp1, roi_i, roi_j, roi_i_size, roi_j_size);
+	temp1.save(TEMP_PPM.c_str());
+	lowPass(TEMP_PPM, temp2, radius);
+	std::remove(TEMP_PPM.c_str());
+	mergeRoi(src, temp2, tgt, roi_i, roi_j, roi_i_size, roi_j_size);
+}
+
+
+void utility::highPass(string src, image &tgt, int radius) 
+{
+    cv::Mat img, complexImg, filter, filterOutput, imgOutput, planes[2];
+
+    img = imread(src, 0);
+
+    complexImg = computeDFT(img);
+    filter = complexImg.clone();
+
+    highpassFilter(filter, radius); // create an ideal high pass filter
+
+    fftShift(complexImg); // rearrage quadrants
+    mulSpectrums(complexImg, filter, complexImg, 0); // multiply 2 spectrums
+    fftShift(complexImg); // rearrage quadrants
+
+    // compute inverse
+    idft(complexImg, complexImg);
+
+    split(complexImg, planes);
+    normalize(planes[0], imgOutput, 0, 1, NORM_MINMAX);
+
+    split(filter, planes);
+    normalize(planes[1], filterOutput, 0, 1, NORM_MINMAX);
+
+    // imwrite("Filter.pgm", filterOutput*255);			// Debug
+    // imwrite("Low_pass_filter.pgm", imgOutput*255);	// Debug
+    imwrite(TEMP_PGM, imgOutput*255);
+	save_to_tgt(TEMP_PGM, tgt);
+	std::remove(TEMP_PGM.c_str());
+}
+
+
+void utility::highPassROI(image &src, image &tgt, string tgtfile,
+	int radius, int roi_i, int roi_j, int roi_i_size, int roi_j_size)
+{
+	roi(src, temp1, roi_i, roi_j, roi_i_size, roi_j_size);
+	temp1.save(TEMP_PGM.c_str());
+	highPass(TEMP_PGM, tgt, radius);
+	// std::remove(TEMP_PGM.c_str());
+}
+
+void utility::highPassWrapper(image &src, image &tgt, string tgtfile,
+	int radius, int roi_i, int roi_j, int roi_i_size, int roi_j_size)
+{
+	roi(src, temp1, roi_i, roi_j, roi_i_size, roi_j_size);
+	temp1.save(TEMP_PPM.c_str());
+	highPass(TEMP_PPM, temp2, radius);
+	std::remove(TEMP_PPM.c_str());
+	mergeRoi(src, temp2, tgt, roi_i, roi_j, roi_i_size, roi_j_size);
 }

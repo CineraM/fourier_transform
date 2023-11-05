@@ -1,6 +1,2 @@
-portrait.pgm portrait_ft.pgm fourierTrans 
-vegeta.pgm vegeta_ft.pgm fourierTrans 
-food.pgm food_ft.pgm fourierTrans 
-portrait_ft.pgm portrait_inverse.pgm fourierTrans 
-vegeta_ft.pgm vegeta_inverse.pgm fourierTrans 
-food_ft.pgm food_inverse.pgm fourierTrans 
+portrait.pgm 1_1_portrait.pgm 1 0 0 300 300 highPassROI 50 
+portrait.pgm 1_2_portrait.pgm 1 0 0 300 300 highPassWrapper 50 

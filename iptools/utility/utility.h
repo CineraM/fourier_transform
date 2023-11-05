@@ -75,7 +75,22 @@ class utility
 		static void equalizeT(image &src, string srcfile, image &tgt, int threshold);
 		// p3 fncs
 		static void fourierTrans(string src, image &tgt);
-		static void inverseFourierTrans(string src, image &tgt); 
+		static void fourierTransROI(image &src, image &tgt, string tgtfile,
+			int roi_i, int roi_j, int roi_i_size, int roi_j_size);
+		static void fourierTransWrapper(image &src, image &tgt, string tgtfile,
+			int roi_i, int roi_j, int roi_i_size, int roi_j_size);
+		
+		static void lowPass(string srcfile, image &tgt, int radius);
+		static void lowPassROI(image &src, image &tgt, string tgtfile,
+			int radius, int roi_i, int roi_j, int roi_i_size, int roi_j_size);
+		static void lowPassWrapper(image &src, image &tgt, string tgtfile,
+			int radius, int roi_i, int roi_j, int roi_i_size, int roi_j_size);
+		
+		static void highPass(string src, image &tgt, int radius); 
+		static void highPassROI(image &src, image &tgt, string tgtfile,
+			int radius, int roi_i, int roi_j, int roi_i_size, int roi_j_size);
+		static void highPassWrapper(image &src, image &tgt, string tgtfile,
+			int radius, int roi_i, int roi_j, int roi_i_size, int roi_j_size);
 
 };
 

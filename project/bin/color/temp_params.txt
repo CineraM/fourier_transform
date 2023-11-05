@@ -1,3 +1,30 @@
 portrait.pgm portrait_ft.pgm fourierTrans 
 vegeta.pgm vegeta_ft.pgm fourierTrans 
 food.pgm food_ft.pgm fourierTrans 
+portrait_ft.pgm portrait_inverse.pgm fourierTrans 
+vegeta_ft.pgm vegeta_inverse.pgm fourierTrans 
+food_ft.pgm food_inverse.pgm fourierTrans 
+
+
+
+portrait.pgm portrait_inverse.pgm inverseFourierTrans 
+
+
+portrait.pgm portrait_ft.pgm fourierTrans  
+portrait.pgm portrait_lp5.pgm lowPass 5 
+portrait.pgm portrait_lp20.pgm lowPass 20 
+portrait.pgm portrait_lp300.pgm lowPass 30 
+portrait.pgm portrait_lp50.pgm lowPass 50 
+portrait.pgm portrait_lp100.pgm lowPass 100
+portrait.pgm portrait_lp5.pgm highPass 5 
+portrait.pgm portrait_lp20.pgm highPass 20 
+portrait.pgm portrait_lp300.pgm highPass 30
+portrait.pgm portrait_lp50.pgm highPass 50 
+portrait.pgm portrait_lp100.pgm highPass 100 
+portrait.pgm portrait_lp300.pgm highPass 300 
+
+
+
+
+portrait.pgm 1_1_portrait.pgm 1 0 0 300 300 fourierTransROI 
+portrait.pgm 1_2_portrait.pgm 1 0 0 300 300 fourierTransWrapper

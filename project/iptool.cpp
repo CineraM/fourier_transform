@@ -116,12 +116,20 @@ int main (int argc, char** argv)
 			flag = true;
 			utility::fourierTrans(srcfile, tgt);
 		}
-		else if(strcmp(pch,"inverseFourierTrans")==0)
+		else if(strcmp(pch,"lowPass")==0)
 		{
 			flag = true;
-			utility::inverseFourierTrans(srcfile, tgt);
+			XD
+			int radius = atoi(pch);
+			utility::lowPass(srcfile, tgt, radius);
 		}
-
+		else if(strcmp(pch,"highPass")==0)
+		{
+			flag = true;
+			XD
+			int radius = atoi(pch);
+			utility::highPass(srcfile, tgt, radius);
+		}
 
 		if(flag)
 		{
@@ -203,34 +211,63 @@ int main (int argc, char** argv)
 				int B = atoi(pch);
 				utility::histogramStretchingROI(temp, tgt, A, B, roi_i, roi_j, roi_i_size, roi_j_size);
 			}
-			else if (strcmp(pch,"equalizeGrey")==0)	// only call as last parameter
+			else if (strcmp(pch,"equalizeGrey")==0)
 			{
 				utility::equalizeGreyWrapper(temp, tgt, outfile, roi_i, roi_j, roi_i_size, roi_j_size);
 			}
-			else if (strcmp(pch,"equalizeGreyROI")==0)	// only call as last parameter
+			else if (strcmp(pch,"equalizeGreyROI")==0)
 			{
 				utility::equalizeGreyROI(temp, tgt, outfile, roi_i, roi_j, roi_i_size, roi_j_size);
 			}
-			else if (strcmp(pch,"equalizeColor")==0)	// only call as last parameter
+			else if (strcmp(pch,"equalizeColor")==0)
 			{
 				XD
 				utility::equalizeColorWrapper(temp, tgt, outfile, atoi(pch), roi_i, roi_j, roi_i_size, roi_j_size);
 			}
-			else if (strcmp(pch,"equalizeColorROI")==0)	// only call as last parameter
+			else if (strcmp(pch,"equalizeColorROI")==0)
 			{
 				XD
 				utility::equalizeColorROI(temp, tgt, outfile, atoi(pch), roi_i, roi_j, roi_i_size, roi_j_size);
 			}
 
-			else if (strcmp(pch,"equalizeHSV")==0)	// only call as last parameter
+			else if (strcmp(pch,"equalizeHSV")==0)
 			{
 				XD
 				utility::equalizeHSVWrapper(temp, tgt, outfile, atoi(pch), roi_i, roi_j, roi_i_size, roi_j_size);
 			}
-			else if (strcmp(pch,"equalizeHSVROI")==0)	// only call as last parameter
+			else if (strcmp(pch,"equalizeHSVROI")==0)
 			{
 				XD
 				utility::equalizeHSVROI(temp, tgt, outfile, atoi(pch), roi_i, roi_j, roi_i_size, roi_j_size);
+			}
+			// p3
+			else if (strcmp(pch,"fourierTransWrapper")==0)
+			{
+				utility::fourierTransWrapper(temp, tgt, outfile, roi_i, roi_j, roi_i_size, roi_j_size);
+			}
+			else if (strcmp(pch,"fourierTransROI")==0)
+			{
+				utility::fourierTransROI(temp, tgt, outfile, roi_i, roi_j, roi_i_size, roi_j_size);
+			}
+			else if (strcmp(pch,"lowPassWrapper")==0)
+			{
+				XD
+				utility::lowPassWrapper(temp, tgt, outfile, atoi(pch), roi_i, roi_j, roi_i_size, roi_j_size);
+			}
+			else if (strcmp(pch,"lowPassROI")==0)
+			{
+				XD
+				utility::lowPassROI(temp, tgt, outfile, atoi(pch), roi_i, roi_j, roi_i_size, roi_j_size);
+			}
+			else if (strcmp(pch,"highPassWrapper")==0)
+			{
+				XD
+				utility::highPassWrapper(temp, tgt, outfile, atoi(pch), roi_i, roi_j, roi_i_size, roi_j_size);
+			}
+			else if (strcmp(pch,"highPassROI")==0)
+			{
+				XD
+				utility::highPassROI(temp, tgt, outfile, atoi(pch), roi_i, roi_j, roi_i_size, roi_j_size);
 			}
 
 			temp.copyImage(tgt);
@@ -241,8 +278,3 @@ int main (int argc, char** argv)
 	fclose(fp);
 	return 0;
 }
-
-// 3.
-// open CV
-// HSI --> HSV
-// Follow the right steps, convert to grey levels
