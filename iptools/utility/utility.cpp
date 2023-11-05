@@ -1,6 +1,7 @@
 #include "utility.h"
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 
 #define MAXRGB 255
 #define MINRGB 0
@@ -10,6 +11,7 @@ using namespace std;
 image temp1, temp2;
 string TEMP_PGM = "temp.pgm";
 string TEMP_PPM = "temp.ppm";
+string TEMP_PNG = "temp.png";
 
 int utility::checkValue(int value)
 {
@@ -531,4 +533,81 @@ void utility::equalizeT(image &src, string srcfile, image &tgt, int threshold)
 	}
 
 	std::remove(temp_file.c_str());
+}
+
+// reference opencv documentation
+// https://docs.opencv.org/4.x/d8/d01/tutorial_discrete_fourier_transform.html
+void utility::fourierTrans(string src, image &tgt)
+{
+	Mat src_image = imread(src, IMREAD_GRAYSCALE);
+
+    Mat padded;                            //expand input image to optimal size
+    int m = getOptimalDFTSize( src_image.rows );
+    int n = getOptimalDFTSize( src_image.cols ); // on the border add zero values
+    copyMakeBorder(src_image, padded, 0, m - src_image.rows, 0, n - src_image.cols, BORDER_CONSTANT, Scalar::all(0));
+    Mat planes[] = {Mat_<float>(padded), Mat::zeros(padded.size(), CV_32F)};
+    Mat complexI;
+    merge(planes, 2, complexI);         // Add to the expanded another plane with zeros
+    dft(complexI, complexI);            // this way the result may fit in the source matrix
+    // compute the magnitude and switch to logarithmic scale
+    // => log(1 + sqrt(Re(DFT(I))^2 + Im(DFT(I))^2))
+    split(complexI, planes);                   // planes[0] = Re(DFT(I), planes[1] = Im(DFT(I))
+    magnitude(planes[0], planes[1], planes[0]);// planes[0] = magnitude
+    Mat magnitudeImage = planes[0];
+    magnitudeImage += Scalar::all(1);                    // switch to logarithmic scale
+    log(magnitudeImage, magnitudeImage);
+    // crop the spectrum, if it has an odd number of rows or columns
+    magnitudeImage = magnitudeImage(Rect(0, 0, magnitudeImage.cols & -2, magnitudeImage.rows & -2));
+    // rearrange the quadrants of Fourier image  so that the origin is at the image center
+    int cx = magnitudeImage.cols/2;
+    int cy = magnitudeImage.rows/2;
+    Mat q0(magnitudeImage, Rect(0, 0, cx, cy));   // Top-Left - Create a ROI per quadrant
+    Mat q1(magnitudeImage, Rect(cx, 0, cx, cy));  // Top-Right
+    Mat q2(magnitudeImage, Rect(0, cy, cx, cy));  // Bottom-Left
+    Mat q3(magnitudeImage, Rect(cx, cy, cx, cy)); // Bottom-Right
+    Mat tmp;                           // swap quadrants (Top-Left with Bottom-Right)
+    q0.copyTo(tmp);
+    q3.copyTo(q0);
+    tmp.copyTo(q3);
+    q1.copyTo(tmp);                    // swap quadrant (Top-Right with Bottom-Left)
+    q2.copyTo(q1);
+    tmp.copyTo(q2);
+    normalize(magnitudeImage, magnitudeImage, 0, 255, NORM_MINMAX); 
+	// Transform the matrix with float values into a
+	// viewable image form (float between values 0 and 1).
+
+    imwrite(TEMP_PGM, magnitudeImage);
+	save_to_tgt(TEMP_PGM, tgt);
+	std::remove(TEMP_PGM.c_str());
+}
+
+
+// Function to apply inverse Fourier transform to an image
+void utility::inverseFourierTrans(string src, image &tgt) 
+{
+	Mat magnitude_image = imread(src, IMREAD_GRAYSCALE);
+    // Convert the magnitude image back to float
+    Mat magnitude;
+    magnitude_image.convertTo(magnitude, CV_32F);
+
+    // Reverse the log scale and normalize
+    magnitude = (magnitude - 1);
+    exp(magnitude, magnitude);
+    
+    // Create a complex image from the magnitude
+    Mat complexImage(magnitude.size(), CV_32F, Scalar(0));
+    Mat planes[] = { magnitude, Mat::zeros(magnitude.size(), CV_32F) };
+    merge(planes, 2, complexImage);
+
+    // Perform the inverse Fourier transform
+    Mat invertedImage;
+    idft(complexImage, invertedImage, DFT_REAL_OUTPUT);
+
+    // Normalize the result to 0-255 range
+    normalize(invertedImage, invertedImage, 0, 255, NORM_MINMAX);
+    invertedImage.convertTo(invertedImage, CV_8U);
+
+    imwrite(TEMP_PGM, invertedImage);
+	save_to_tgt(TEMP_PGM, tgt);
+	std::remove(TEMP_PGM.c_str());
 }

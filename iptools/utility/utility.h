@@ -53,7 +53,6 @@ class utility
 		static void histogramStretchingROI(image &src, image &tgt, int A, int B, 
 			int roi_i, int roi_j, int roi_i_size, int roi_j_size);
 
-
 		static void equalizeGrey(string src, image &tgt);
 		static void equalizeGreyROI(image &src, image &tgt, string tgtfile,
 			int roi_i, int roi_j, int roi_i_size, int roi_j_size);
@@ -74,6 +73,10 @@ class utility
 
 		// EC
 		static void equalizeT(image &src, string srcfile, image &tgt, int threshold);
+		// p3 fncs
+		static void fourierTrans(string src, image &tgt);
+		static void inverseFourierTrans(string src, image &tgt); 
+
 };
 
 #endif

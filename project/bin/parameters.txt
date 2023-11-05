@@ -1,39 +1,6 @@
-portrait.pgm 1_1_portrait.pgm 2 0 0 500 500 rotateROI 90 0 0 300 300 stretchROI 0 255 
-portrait.pgm 1_2_portrait.pgm 2 0 0 500 500 rotateROI 90 0 0 300 300 equalizeGreyROI 
-portrait.pgm 1_3_portrait.pgm 2 30 20 300 410 rotateROI 180 0 0 300 300 stretchROI 0 120 
-portrait.pgm 1_4_portrait.pgm 2 10 10 400 350 rotateROI 270 0 0 212 264 equalizeGreyROI 
-food.pgm 1_5_food.pgm 2 0 0 420 480 rotateROI 270 0 0 324 350 stretchROI 10 240 
-food.pgm 1_6_food.pgm 2 0 0 470 400 rotateROI 180 0 0 350 350 equalizeGreyROI 
-food.pgm 1_7_food.pgm 2 30 20 400 420 rotateROI 180 0 0 351 298 stretchROI 50 200 
-food.pgm 1_8_food.pgm 2 50 10 400 350 rotateROI 90 0 0 212 224 equalizeGreyROI 
-vegeta.pgm 1_9_vegeta.pgm 2 0 0 500 485 rotateROI 270 0 0 333 410 stretchROI 150 240 
-vegeta.pgm 1_10_vegeta.pgm 2 0 0 500 500 rotateROI 180 0 0 350 350 equalizeGreyROI 
-vegeta.pgm 1_11_vegeta.pgm 2 30 20 400 420 rotateROI 180 0 0 351 298 stretchROI 50 200 
-vegeta.pgm 1_12_vegeta.pgm 2 50 10 400 350 rotateROI 90 0 0 212 224 equalizeGreyROI 
-landscape.pgm 2_1_landscape.pgm equalizeT 29 
-vegetaColor.ppm 3_1_vegetaColor.ppm 2 0 0 500 500 rotateROI 90 0 0 300 300 equalizeHSVROI 0
-vegetaColor.ppm 3_2_vegetaColor.ppm 2 0 0 500 500 rotateROI 90 0 0 300 300 equalizeColorROI 1
-vegetaColor.ppm 3_3_vegetaColor.ppm 2 30 20 300 410 rotateROI 180 0 0 300 300 equalizeColorROI 0
-vegetaColor.ppm 3_4_vegetaColor.ppm 2 10 10 400 350 rotateROI 270 0 0 212 264 equalizeHSVROI 2 
-baboon.ppm 3_5_baboon.ppm 2 0 0 420 480 rotateROI 270 0 0 324 350 equalizeHSVROI 2  
-baboon.ppm 3_6_baboon.ppm 2 0 0 470 400 rotateROI 180 0 0 350 350 equalizeHSVROI 3 
-baboon.ppm 3_7_baboon.ppm 2 30 20 400 420 rotateROI 180 0 0 351 298 equalizeColorROI 2
-baboon.ppm 3_8_baboon.ppm 2 50 10 400 350 rotateROI 90 0 0 212 224 equalizeColorROI 3 
-portraitColor.ppm 3_9_portraitColor.ppm 2 0 0 500 485 rotateROI 270 0 0 333 410 equalizeHSVROI 2 
-portraitColor.ppm 3_10_portraitColor.ppm 2 0 0 500 500 rotateROI 180 0 0 350 350 equalizeHSVROI 1 
-portraitColor.ppm 3_11_portraitColor.ppm 2 30 20 400 420 rotateROI 180 0 0 351 298 equalizeColorROI 2
-portraitColor.ppm 3_12_portraitColor.ppm 2 50 10 400 350 rotateROI 90 0 0 212 224 equalizeColorROI 2
-vegetaColor.ppm 4_1_report_picture.ppm 2 0 0 512 256 equalizeColor 3 0 256 512 256 equalizeHSV 2
-portraitColor.ppm 4_2_report_picture.ppm 2 0 0 512 256 equalizeColor 3 0 256 512 256 equalizeHSV 2
-baboon.ppm 4_3_report_picture.ppm 2 0 0 512 256 equalizeColor 3 0 256 512 256 equalizeHSV 2
-portrait.pgm 4_4_report_picture.pgm stretch 0 255
-portrait.pgm 4_5_report_picture.pgm equalizeGrey
-vegeta.pgm 4_6_report_picture.pgm equalizeGrey
-portraitColor.ppm 4_7_report_picture.ppm equalizeColor 0
-portraitColor.ppm 4_8_report_picture.ppm equalizeColor 1
-portraitColor.ppm 4_9_report_picture.ppm equalizeColor 2
-portraitColor.ppm 4_10_report_picture.ppm equalizeColor 3
-baboon.ppm 4_11_report_picture.ppm equalizeHSV 0
-baboon.ppm 4_12_report_picture.ppm equalizeHSV 1
-baboon.ppm 4_13_report_picture.ppm equalizeHSV 2
-baboon.ppm 4_14_report_picture.ppm equalizeHSV 3  
+portrait.pgm portrait_ft.pgm fourierTrans 
+vegeta.pgm vegeta_ft.pgm fourierTrans 
+food.pgm food_ft.pgm fourierTrans 
+portrait_ft.pgm portrait_inverse.pgm fourierTrans 
+vegeta_ft.pgm vegeta_inverse.pgm fourierTrans 
+food_ft.pgm food_inverse.pgm fourierTrans 

@@ -1,0 +1,3 @@
+portrait.pgm portrait_ft.pgm fourierTrans 
+vegeta.pgm vegeta_ft.pgm fourierTrans 
+food.pgm food_ft.pgm fourierTrans 

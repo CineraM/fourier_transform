@@ -11,7 +11,7 @@ sftp://fsprime.cse.usf.edu
 22 or 23
 
 
-cd Documents/grey_level_color_opencv/iptools/;
+cd Documents/fourier_transform/iptools/;
 make clean;
 make;
 cd ../project/;
@@ -21,4 +21,4 @@ cd bin/;
 ./iptool parameters.txt;
 
 
-/home/c/cinera/Documents/grey_level_color_opencv/project/bin
+/home/c/cinera/Documents/fourier_transform/project/bin

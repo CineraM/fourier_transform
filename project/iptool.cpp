@@ -77,6 +77,7 @@ int main (int argc, char** argv)
 			flag = true;
 			utility::addColorBrightness(src, tgt, atoi(pch));
 		}
+		//project 2 fncs
 		else if (strcmp(pch,"stretch")==0)
 		{
 			XD
@@ -86,7 +87,6 @@ int main (int argc, char** argv)
 			flag = true;
 			utility::histogramStretching(src, tgt, A, B);
 		}
-		//project 2 fncs
 		else if(strcmp(pch,"equalizeGrey")==0)
 		{
 			flag = true;
@@ -109,6 +109,17 @@ int main (int argc, char** argv)
 			XD
 			flag = true;
 			utility::equalizeT(src, srcfile, tgt, atoi(pch));
+		}
+		// p3 fncs
+		else if(strcmp(pch,"fourierTrans")==0)
+		{
+			flag = true;
+			utility::fourierTrans(srcfile, tgt);
+		}
+		else if(strcmp(pch,"inverseFourierTrans")==0)
+		{
+			flag = true;
+			utility::inverseFourierTrans(srcfile, tgt);
 		}
 
 
