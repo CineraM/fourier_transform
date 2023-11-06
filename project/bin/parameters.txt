@@ -1,1 +1,1 @@
-cathedral.pgm cathedral_BS.pgm bandStop 50 200 
+baboon.ppm baboon_HP_C.ppm colorHighPass 30

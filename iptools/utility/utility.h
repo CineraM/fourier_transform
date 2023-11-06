@@ -99,6 +99,8 @@ class utility
 			int T, int roi_i, int roi_j, int roi_i_size, int roi_j_size);
 
 		static void bandStop(string src, image &tgt, int r1, int r2);
+
+		static void colorHighPass(string src, image &tgt, int radius); 
 };
 
 #endif

@@ -719,7 +719,6 @@ void utility::lowPass(string src, image &tgt, int radius)
     normalize(planes[1], filterOutput, 0, 1, NORM_MINMAX);
 
     // imwrite("Filter.pgm", filterOutput*255);			// Debug
-    // imwrite("Low_pass_filter.pgm", imgOutput*255);	// Debug
     imwrite(TEMP_PGM, imgOutput*255);
 	save_to_tgt(TEMP_PGM, tgt);
 	std::remove(TEMP_PGM.c_str());
@@ -770,7 +769,6 @@ void utility::highPass(string src, image &tgt, int radius)
     normalize(planes[1], filterOutput, 0, 1, NORM_MINMAX);
 
     // imwrite("Filter.pgm", filterOutput*255);			// Debug
-    // imwrite("Low_pass_filter.pgm", imgOutput*255);	// Debug
     imwrite(TEMP_PGM, imgOutput*255);
 	save_to_tgt(TEMP_PGM, tgt);
 	std::remove(TEMP_PGM.c_str());
@@ -865,47 +863,35 @@ void utility::bandStop(string src, image &tgt, int r1, int r2)
     normalize(planes[1], filterOutput, 0, 1, NORM_MINMAX);
 
     imwrite("Filter.pgm", filterOutput*255);			// Debug
-    // imwrite("Low_pass_filter.pgm", imgOutput*255);	// Debug
     imwrite(TEMP_PGM, imgOutput*255);
 	save_to_tgt(TEMP_PGM, tgt);
 	std::remove(TEMP_PGM.c_str());
 }
 
 
+void utility::colorHighPass(string src, image &tgt, int radius)
+{
+	int channel_index = 2;
+	Mat input = imread(src, IMREAD_COLOR);
+	Mat hsvImage;
+	cvtColor(input, hsvImage,COLOR_BGR2HSV);  // Convert to HSV color space
 
-    int radius = 30;
-    cv::Mat img, complexImg, filter, filterOutput, imgOutput, planes[2];
+    std::vector<cv::Mat> channels;
+	split(hsvImage, channels);  // Split the channels (H, S, V)
 
-    img = imread("truck.jpg", 1); // Load color image in BGR format (use 1 instead of 0)
-    if (img.empty()) {
-        return -1;
-    }
+	Mat& channel = channels[channel_index];
 
-    // Convert the color image to HSV
-    cv::Mat hsvImage;
-    cvtColor(img, hsvImage, CV_BGR2HSV);
+    // Apply high-pass filter
+	Mat blurred;
+	GaussianBlur(channel, blurred,Size(0, 0), 3);
+	addWeighted(channel, 1.5, blurred, -0.5, 0, channel);
 
-    // Process the desired HSV channel (e.g., S channel)
-    int channelToProcess = 1; // Change this to process H, S, or V channel
-    cv::Mat channel = hsvImage.clone();
-    extractChannel(hsvImage, channelToProcess, channel);
+	merge(channels, hsvImage);  // Merge back into HSV image
 
-    complexImg = computeDFT(channel);
-    filter = complexImg.clone();
+	Mat output;
+	cvtColor(hsvImage, output, COLOR_HSV2BGR); 
 
-    highpassFilter(filter, radius); // create an ideal high pass filter
-
-    fftShift(complexImg); // rearrange quadrants
-    mulSpectrums(complexImg, filter, complexImg, 0); // multiply 2 spectrums
-    fftShift(complexImg); // rearrange quadrants
-
-    // Compute inverse
-    idft(complexImg, complexImg);
-
-    split(complexImg, planes);
-    normalize(planes[0], imgOutput, 0, 1, CV_MINMAX);
-
-    split(filter, planes);
-    normalize(planes[1], filterOutput, 0, 1, CV_MINMAX);
-
-    imshow("Input image", img);
+	imwrite(TEMP_PPM, output);
+	save_to_tgt(TEMP_PPM, tgt);
+	std::remove(TEMP_PPM.c_str());
+}

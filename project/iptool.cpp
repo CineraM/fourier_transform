@@ -145,6 +145,13 @@ int main (int argc, char** argv)
 			int r2 = atoi(pch);
 			utility::bandStop(srcfile, tgt, r1, r2);
 		}
+		else if(strcmp(pch,"colorHighPass")==0)
+		{
+			flag = true;
+			XD
+			int radius = atoi(pch);
+			utility::colorHighPass(srcfile, tgt, radius);
+		}
 
 		if(flag)
 		{
