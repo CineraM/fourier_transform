@@ -795,3 +795,23 @@ void utility::highPassWrapper(image &src, image &tgt, string tgtfile,
 	std::remove(TEMP_PPM.c_str());
 	mergeRoi(src, temp2, tgt, roi_i, roi_j, roi_i_size, roi_j_size);
 }
+
+
+void utility::edgeSharp(string src, image &tgt, int T) 
+{
+    Mat gray = imread(src, 0);
+
+    // Apply Gaussian blur to the input image
+    Mat blurred;
+    GaussianBlur(gray, blurred, Size(0, 0), 1.5);
+
+    // Calculate the difference between the input and blurred images
+    Mat highFreq = gray - blurred;
+
+    // Multiply high-frequency components by the user-provided constant
+    Mat sharpened = gray + T * highFreq;
+
+	imwrite(TEMP_PGM, sharpened);
+	save_to_tgt(TEMP_PGM, tgt);
+	std::remove(TEMP_PGM.c_str());
+}

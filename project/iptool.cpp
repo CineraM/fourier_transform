@@ -130,6 +130,13 @@ int main (int argc, char** argv)
 			int radius = atoi(pch);
 			utility::highPass(srcfile, tgt, radius);
 		}
+		else if(strcmp(pch,"edgeSharp")==0)
+		{
+			flag = true;
+			XD
+			double T = atoi(pch)/10;
+			utility::edgeSharp(srcfile, tgt, T);
+		}
 
 		if(flag)
 		{
@@ -269,6 +276,7 @@ int main (int argc, char** argv)
 				XD
 				utility::highPassROI(temp, tgt, outfile, atoi(pch), roi_i, roi_j, roi_i_size, roi_j_size);
 			}
+
 
 			temp.copyImage(tgt);
 		}

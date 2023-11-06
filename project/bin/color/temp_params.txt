@@ -28,3 +28,16 @@ portrait.pgm portrait_lp300.pgm highPass 300
 
 portrait.pgm 1_1_portrait.pgm 1 0 0 300 300 fourierTransROI 
 portrait.pgm 1_2_portrait.pgm 1 0 0 300 300 fourierTransWrapper
+
+
+portrait.pgm 1_1_portrait.pgm 1 0 0 300 300 lowPassROI 20 
+portrait.pgm 1_2_portrait.pgm 1 0 0 300 300 lowPassWrapper 20 
+portrait.pgm 1_3_portrait.pgm 1 0 0 300 300 highPassROI 100 
+portrait.pgm 1_4_portrait.pgm 1 0 0 300 300 highPassWrapper 100 
+
+
+
+
+portrait.pgm portrait_edge.pgm edgeSharp 
+vegeta.pgm vegeta_edge.pgm edgeSharp 
+food.pgm food_edge.pgm edgeSharp 

@@ -92,6 +92,7 @@ class utility
 		static void highPassWrapper(image &src, image &tgt, string tgtfile,
 			int radius, int roi_i, int roi_j, int roi_i_size, int roi_j_size);
 
+		static void edgeSharp(string src, image &tgt, int T); 
 };
 
 #endif
