@@ -137,6 +137,14 @@ int main (int argc, char** argv)
 			double T = atoi(pch)/10;
 			utility::edgeSharp(srcfile, tgt, T);
 		}
+		else if(strcmp(pch,"bandStop")==0)
+		{
+			flag = true;
+			XD
+			int r1 = atoi(pch);
+			int r2 = atoi(pch);
+			utility::bandStop(srcfile, tgt, r1, r2);
+		}
 
 		if(flag)
 		{
@@ -275,6 +283,18 @@ int main (int argc, char** argv)
 			{
 				XD
 				utility::highPassROI(temp, tgt, outfile, atoi(pch), roi_i, roi_j, roi_i_size, roi_j_size);
+			}
+			else if (strcmp(pch,"edgeSharpWrapper")==0)
+			{
+				XD
+				double T = atoi(pch)/10;
+				utility::edgeSharpWrapper(temp, tgt, outfile, T, roi_i, roi_j, roi_i_size, roi_j_size);
+			}
+			else if (strcmp(pch,"edgeSharpROI")==0)
+			{
+				XD
+				double T = atoi(pch)/10;
+				utility::edgeSharpROI(temp, tgt, outfile, T, roi_i, roi_j, roi_i_size, roi_j_size);
 			}
 
 

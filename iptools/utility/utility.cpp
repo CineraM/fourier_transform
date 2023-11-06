@@ -815,3 +815,97 @@ void utility::edgeSharp(string src, image &tgt, int T)
 	save_to_tgt(TEMP_PGM, tgt);
 	std::remove(TEMP_PGM.c_str());
 }
+
+void utility::edgeSharpROI(image &src, image &tgt, string tgtfile,
+	int T, int roi_i, int roi_j, int roi_i_size, int roi_j_size)
+{
+	roi(src, temp1, roi_i, roi_j, roi_i_size, roi_j_size);
+	temp1.save(TEMP_PGM.c_str());
+	edgeSharp(TEMP_PGM, tgt, T);
+	// std::remove(TEMP_PGM.c_str());
+}
+
+void utility::edgeSharpWrapper(image &src, image &tgt, string tgtfile,
+	int T, int roi_i, int roi_j, int roi_i_size, int roi_j_size)
+{
+	roi(src, temp1, roi_i, roi_j, roi_i_size, roi_j_size);
+	temp1.save(TEMP_PPM.c_str());
+	edgeSharp(TEMP_PPM, temp2, T);
+	std::remove(TEMP_PPM.c_str());
+	mergeRoi(src, temp2, tgt, roi_i, roi_j, roi_i_size, roi_j_size);
+}
+
+
+// ec fncs
+void utility::bandStop(string src, image &tgt, int r1, int r2) 
+{
+    cv::Mat img, complexImg, high, low, filter, filterOutput, imgOutput, planes[2];
+
+    img = imread(src, 0);
+
+    complexImg = computeDFT(img);
+    low = complexImg.clone();
+	high = complexImg.clone();
+
+    lowpassFilter(high, r1);
+    highpassFilter(low, r2);
+	subtract(high, low, filter);
+
+    fftShift(complexImg); // rearrage quadrants
+    mulSpectrums(complexImg, filter, complexImg, 0); // multiply 2 spectrums
+    fftShift(complexImg); // rearrage quadrants
+
+    // compute inverse
+    idft(complexImg, complexImg);
+
+    split(complexImg, planes);
+    normalize(planes[0], imgOutput, 0, 1, NORM_MINMAX);
+
+    split(filter, planes);
+    normalize(planes[1], filterOutput, 0, 1, NORM_MINMAX);
+
+    imwrite("Filter.pgm", filterOutput*255);			// Debug
+    // imwrite("Low_pass_filter.pgm", imgOutput*255);	// Debug
+    imwrite(TEMP_PGM, imgOutput*255);
+	save_to_tgt(TEMP_PGM, tgt);
+	std::remove(TEMP_PGM.c_str());
+}
+
+
+
+    int radius = 30;
+    cv::Mat img, complexImg, filter, filterOutput, imgOutput, planes[2];
+
+    img = imread("truck.jpg", 1); // Load color image in BGR format (use 1 instead of 0)
+    if (img.empty()) {
+        return -1;
+    }
+
+    // Convert the color image to HSV
+    cv::Mat hsvImage;
+    cvtColor(img, hsvImage, CV_BGR2HSV);
+
+    // Process the desired HSV channel (e.g., S channel)
+    int channelToProcess = 1; // Change this to process H, S, or V channel
+    cv::Mat channel = hsvImage.clone();
+    extractChannel(hsvImage, channelToProcess, channel);
+
+    complexImg = computeDFT(channel);
+    filter = complexImg.clone();
+
+    highpassFilter(filter, radius); // create an ideal high pass filter
+
+    fftShift(complexImg); // rearrange quadrants
+    mulSpectrums(complexImg, filter, complexImg, 0); // multiply 2 spectrums
+    fftShift(complexImg); // rearrange quadrants
+
+    // Compute inverse
+    idft(complexImg, complexImg);
+
+    split(complexImg, planes);
+    normalize(planes[0], imgOutput, 0, 1, CV_MINMAX);
+
+    split(filter, planes);
+    normalize(planes[1], filterOutput, 0, 1, CV_MINMAX);
+
+    imshow("Input image", img);

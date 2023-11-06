@@ -1,9 +1,1 @@
-portrait.pgm portrait_edge20.pgm edgeSharp 20 
-vegeta.pgm vegeta_edge20.pgm edgeSharp 20 
-cathedral.pgm cathedral_edge20.pgm edgeSharp 20 
-portrait.pgm portrait_edge15.pgm edgeSharp 15 
-vegeta.pgm vegeta_edge15.pgm edgeSharp 15 
-cathedral.pgm cathedral_edge15.pgm edgeSharp 15 
-portrait.pgm portrait_edge30.pgm edgeSharp 30 
-vegeta.pgm vegeta_edge30.pgm edgeSharp 30 
-cathedral.pgm cathedral_edge30.pgm edgeSharp 30 
+cathedral.pgm cathedral_BS.pgm bandStop 50 200 

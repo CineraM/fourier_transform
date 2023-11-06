@@ -93,6 +93,12 @@ class utility
 			int radius, int roi_i, int roi_j, int roi_i_size, int roi_j_size);
 
 		static void edgeSharp(string src, image &tgt, int T); 
+		static void edgeSharpROI(image &src, image &tgt, string tgtfile,
+			int T, int roi_i, int roi_j, int roi_i_size, int roi_j_size);
+		static void edgeSharpWrapper(image &src, image &tgt, string tgtfile,
+			int T, int roi_i, int roi_j, int roi_i_size, int roi_j_size);
+
+		static void bandStop(string src, image &tgt, int r1, int r2);
 };
 
 #endif
