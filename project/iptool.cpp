@@ -142,17 +142,35 @@ int main (int argc, char** argv)
 			flag = true;
 			XD
 			int r1 = atoi(pch);
+			XD
 			int r2 = atoi(pch);
 			utility::bandStop(srcfile, tgt, r1, r2);
+		}
+		else if(strcmp(pch,"colorLowPass")==0)
+		{
+			flag = true;
+			XD
+			int radius = atoi(pch);
+			XD
+			utility::colorLowPass(srcfile, tgt, radius, atoi(pch));
 		}
 		else if(strcmp(pch,"colorHighPass")==0)
 		{
 			flag = true;
 			XD
 			int radius = atoi(pch);
-			utility::colorHighPass(srcfile, tgt, radius);
+			XD
+			utility::colorHighPass(srcfile, tgt, radius, atoi(pch));
 		}
-
+		else if(strcmp(pch,"colorBandStop")==0)
+		{
+			flag = true;
+			XD
+			int r1 = atoi(pch);
+			XD
+			int r2 = atoi(pch);
+			utility::colorBandStop(srcfile, tgt, r1, r2, atoi(pch));
+		}
 		if(flag)
 		{
 			tgt.save(outfile);

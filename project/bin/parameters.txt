@@ -1,1 +1,18 @@
-baboon.ppm baboon_HP_C.ppm colorHighPass 30
+portrait.pgm portrait_FT1.pgm 1 0 0 300 300 fourierTransROI 
+portrait.pgm portrait_FT2.pgm 1 0 0 300 300 fourierTransWrapper 
+portrait.pgm portraitLP_20_1.pgm 1 0 0 300 300 lowPassROI 20 
+portrait.pgm portraitLP_20_2.pgm 1 0 0 300 300 lowPassWrapper 20 
+portrait.pgm portraitHP_100_1.pgm 1 0 0 300 300 highPassROI 100 
+portrait.pgm portraitHP_100_2.pgm 1 0 0 300 300 highPassWrapper 100 
+cathedral.pgm cathedral_ES_30_1.pgm 1 0 0 512 256 edgeSharpROI 30 
+cathedral.pgm cathedral_ES_30_1.pgm 1 0 0 512 256 edgeSharpWrapper 30 
+cathedral.pgm cathedral_BS.pgm bandStop 50 200 
+baboon.ppm baboon_LP_HUE.ppm colorLowPass 20 0 
+baboon.ppm baboon_LP_SAT.ppm colorLowPass 20 1 
+baboon.ppm baboon_LP_VAL.ppm colorLowPass 20 2 
+baboon.ppm baboon_HP_HUE.ppm colorHighPass 50 0 
+baboon.ppm baboon_HP_SAT.ppm colorHighPass 50 1 
+baboon.ppm baboon_HP_VAL.ppm colorHighPass 50 2 
+baboon.ppm baboon_BS_HUE.ppm colorBandStop 50 200 0 
+baboon.ppm baboon_BS_SAT.ppm colorBandStop 50 200 1 
+baboon.ppm baboon_BS_VAL.ppm colorBandStop 50 200 2 

@@ -98,9 +98,13 @@ class utility
 		static void edgeSharpWrapper(image &src, image &tgt, string tgtfile,
 			int T, int roi_i, int roi_j, int roi_i_size, int roi_j_size);
 
+		// EC
 		static void bandStop(string src, image &tgt, int r1, int r2);
 
-		static void colorHighPass(string src, image &tgt, int radius); 
+		static void colorHighPass(string src, image &tgt, int filter_size, int channel_index);
+		static void colorLowPass(string src, image &tgt, int radius, int channel_index);
+		static void colorBandStop(string src, image &tgt, int r1, int r2, int channel_index);
+
 };
 
 #endif

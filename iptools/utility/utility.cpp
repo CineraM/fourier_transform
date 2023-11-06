@@ -718,7 +718,7 @@ void utility::lowPass(string src, image &tgt, int radius)
     split(filter, planes);
     normalize(planes[1], filterOutput, 0, 1, NORM_MINMAX);
 
-    // imwrite("Filter.pgm", filterOutput*255);			// Debug
+    imwrite("LowPassFilter.pgm", filterOutput*255);			// Debug
     imwrite(TEMP_PGM, imgOutput*255);
 	save_to_tgt(TEMP_PGM, tgt);
 	std::remove(TEMP_PGM.c_str());
@@ -768,7 +768,7 @@ void utility::highPass(string src, image &tgt, int radius)
     split(filter, planes);
     normalize(planes[1], filterOutput, 0, 1, NORM_MINMAX);
 
-    // imwrite("Filter.pgm", filterOutput*255);			// Debug
+    imwrite("HighPassFilter.pgm", filterOutput*255);			// Debug
     imwrite(TEMP_PGM, imgOutput*255);
 	save_to_tgt(TEMP_PGM, tgt);
 	std::remove(TEMP_PGM.c_str());
@@ -862,36 +862,168 @@ void utility::bandStop(string src, image &tgt, int r1, int r2)
     split(filter, planes);
     normalize(planes[1], filterOutput, 0, 1, NORM_MINMAX);
 
-    imwrite("Filter.pgm", filterOutput*255);			// Debug
+    imwrite("BandStopFilter.pgm", filterOutput*255);			// Debug
     imwrite(TEMP_PGM, imgOutput*255);
 	save_to_tgt(TEMP_PGM, tgt);
 	std::remove(TEMP_PGM.c_str());
 }
 
 
-void utility::colorHighPass(string src, image &tgt, int radius)
+void utility::colorLowPass(string src, image &tgt, int radius, int channel_index)
 {
-	int channel_index = 2;
-	Mat input = imread(src, IMREAD_COLOR);
-	Mat hsvImage;
-	cvtColor(input, hsvImage,COLOR_BGR2HSV);  // Convert to HSV color space
+    Mat img, complexImg, filter, filterOutput, imgOutput, planes[2];
+	
+	Mat inputImage = imread(src, IMREAD_COLOR);
 
-    std::vector<cv::Mat> channels;
-	split(hsvImage, channels);  // Split the channels (H, S, V)
+    Mat hsvImage;
+    cvtColor(inputImage, hsvImage, COLOR_BGR2HSV);
+    // Split the HSV image into individual channels
+    vector<Mat> hsvChannels;
+    split(hsvImage, hsvChannels);
+	Mat channelImage = hsvChannels[channel_index];
 
-	Mat& channel = channels[channel_index];
+    img = channelImage;
 
-    // Apply high-pass filter
-	Mat blurred;
-	GaussianBlur(channel, blurred,Size(0, 0), 3);
-	addWeighted(channel, 1.5, blurred, -0.5, 0, channel);
+    complexImg = computeDFT(img);
+    filter = complexImg.clone();
 
-	merge(channels, hsvImage);  // Merge back into HSV image
+    lowpassFilter(filter, radius); // create an ideal high pass filter
 
-	Mat output;
-	cvtColor(hsvImage, output, COLOR_HSV2BGR); 
+    fftShift(complexImg); // rearrage quadrants
+    mulSpectrums(complexImg, filter, complexImg, 0); // multiply 2 spectrums
+    fftShift(complexImg); // rearrage quadrants
 
-	imwrite(TEMP_PPM, output);
+    // compute inverse
+    idft(complexImg, complexImg);
+
+    split(complexImg, planes);
+	Mat channel_output;
+    normalize(planes[0], channel_output, 0, 255, NORM_MINMAX);
+
+	// merging by force	
+	if (channel_output.size() == hsvChannels[channel_index].size()) {
+		channel_output.convertTo(hsvChannels[channel_index], hsvChannels[channel_index].type());
+	} else {
+		cerr << "Error: Dimensions do not match between channel_output and hsvChannels[channel_index]." << endl;
+		// Handle the error appropriately, e.g., exit the function or return an error code.
+	}
+
+	Mat modifiedHsvImage;
+	merge(hsvChannels, modifiedHsvImage);
+
+	Mat rgbImage;
+	cvtColor(modifiedHsvImage, rgbImage, COLOR_HSV2BGR);
+
+	imgOutput = rgbImage;
+
+    imwrite(TEMP_PPM, imgOutput);
+	save_to_tgt(TEMP_PPM, tgt);
+	std::remove(TEMP_PPM.c_str());
+}
+
+
+void utility::colorHighPass(string src, image &tgt, int radius, int channel_index)
+{
+    Mat img, complexImg, filter, filterOutput, imgOutput, planes[2];
+	
+	Mat inputImage = imread(src, IMREAD_COLOR);
+
+    Mat hsvImage;
+    cvtColor(inputImage, hsvImage, COLOR_BGR2HSV);
+    // Split the HSV image into individual channels
+    vector<Mat> hsvChannels;
+    split(hsvImage, hsvChannels);
+	Mat channelImage = hsvChannels[channel_index];
+
+    img = channelImage;
+
+    complexImg = computeDFT(img);
+    filter = complexImg.clone();
+
+    highpassFilter(filter, radius); // create an ideal high pass filter
+
+    fftShift(complexImg); // rearrage quadrants
+    mulSpectrums(complexImg, filter, complexImg, 0); // multiply 2 spectrums
+    fftShift(complexImg); // rearrage quadrants
+
+    // compute inverse
+    idft(complexImg, complexImg);
+
+    split(complexImg, planes);
+	Mat channel_output;
+    normalize(planes[0], channel_output, 0, 255, NORM_MINMAX);
+
+	// merging by force	
+	if (channel_output.size() == hsvChannels[channel_index].size()) {
+		channel_output.convertTo(hsvChannels[channel_index], hsvChannels[channel_index].type());
+	} else {
+		cerr << "Error: Dimensions do not match between channel_output and hsvChannels[channel_index]." << endl;
+		// Handle the error appropriately, e.g., exit the function or return an error code.
+	}
+
+	Mat modifiedHsvImage;
+	merge(hsvChannels, modifiedHsvImage);
+
+	Mat rgbImage;
+	cvtColor(modifiedHsvImage, rgbImage, COLOR_HSV2BGR);
+
+	imgOutput = rgbImage;
+
+    imwrite(TEMP_PPM, imgOutput);
+	save_to_tgt(TEMP_PPM, tgt);
+	std::remove(TEMP_PPM.c_str());
+}
+
+void utility::colorBandStop(string src, image &tgt, int r1, int r2, int channel_index)
+{
+	Mat img, complexImg, high, low, filter, filterOutput, imgOutput, planes[2];
+    
+	Mat inputImage = imread(src, IMREAD_COLOR);
+
+    Mat hsvImage;
+    cvtColor(inputImage, hsvImage, COLOR_BGR2HSV);
+    // Split the HSV image into individual channels
+    vector<Mat> hsvChannels;
+    split(hsvImage, hsvChannels);
+	Mat channelImage = hsvChannels[channel_index];
+
+    img = channelImage;
+
+    complexImg = computeDFT(img);
+    filter = complexImg.clone();
+
+    lowpassFilter(high, r1);
+    highpassFilter(low, r2);
+	subtract(high, low, filter);
+
+    fftShift(complexImg); // rearrage quadrants
+    mulSpectrums(complexImg, filter, complexImg, 0); // multiply 2 spectrums
+    fftShift(complexImg); // rearrage quadrants
+
+    // compute inverse
+    idft(complexImg, complexImg);
+
+    split(complexImg, planes);
+	Mat channel_output;
+    normalize(planes[0], channel_output, 0, 255, NORM_MINMAX);
+
+	// merging by force	
+	if (channel_output.size() == hsvChannels[channel_index].size()) {
+		channel_output.convertTo(hsvChannels[channel_index], hsvChannels[channel_index].type());
+	} else {
+		cerr << "Error: Dimensions do not match between channel_output and hsvChannels[channel_index]." << endl;
+		// Handle the error appropriately, e.g., exit the function or return an error code.
+	}
+
+	Mat modifiedHsvImage;
+	merge(hsvChannels, modifiedHsvImage);
+
+	Mat rgbImage;
+	cvtColor(modifiedHsvImage, rgbImage, COLOR_HSV2BGR);
+
+	imgOutput = rgbImage;
+
+    imwrite(TEMP_PPM, imgOutput);
 	save_to_tgt(TEMP_PPM, tgt);
 	std::remove(TEMP_PPM.c_str());
 }
