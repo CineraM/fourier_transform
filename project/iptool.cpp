@@ -169,6 +169,7 @@ int main (int argc, char** argv)
 			int r1 = atoi(pch);
 			XD
 			int r2 = atoi(pch);
+			XD
 			utility::colorBandStop(srcfile, tgt, r1, r2, atoi(pch));
 		}
 		if(flag)

@@ -990,7 +990,8 @@ void utility::colorBandStop(string src, image &tgt, int r1, int r2, int channel_
     img = channelImage;
 
     complexImg = computeDFT(img);
-    filter = complexImg.clone();
+	low = complexImg.clone();
+	high = complexImg.clone();
 
     lowpassFilter(high, r1);
     highpassFilter(low, r2);
