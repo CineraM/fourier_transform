@@ -1,3 +1,26 @@
+portrait.pgm 1_portrait.pgm 3 0 0 400 400 invFourierTransROI 0 0 380 380 edgeSharpROI 30 0 0 380 380 rotateROI 180 
+portrait.pgm 2_portrait.pgm 3 0 0 500 500 lowPassROI 15 0 0 340 340 edgeSharpROI 60 0 0 300 300 rotateROI 270  
+portrait.pgm 3_portrait.pgm 3 100 100 400 400 highPassROI 40 0 0 300 300 edgeSharpROI 12 0 0 290 290 rotateROI 90 
+portrait.pgm 4_portrait.pgm 3 0 10 450 450 highPassROI 12 0 0 394 394 lowPassROI 35 0 0 310 310 rotateROI 90 
+vegeta.pgm 5_vegeta.pgm 3 0 0 400 400 invFourierTransROI 0 0 380 380 edgeSharpROI 60 0 0 380 380 rotateROI 180 
+vegeta.pgm 6_vegeta.pgm 3 0 0 500 500 lowPassROI 15 0 0 340 340 edgeSharpROI 60 0 0 300 300 rotateROI 270  
+vegeta.pgm 7_vegeta.pgm 3 100 100 400 400 highPassROI 40 0 0 300 300 edgeSharpROI 12 0 0 290 290 rotateROI 90 
+vegeta.pgm 8_vegeta.pgm 3 0 10 450 450 highPassROI 12 0 0 394 394 lowPassROI 35 0 0 310 310 rotateROI 90 
+cathedral.pgm 9_cathedral.pgm 3 0 0 400 400 invFourierTransROI 0 0 380 380 edgeSharpROI 60 0 0 380 380 rotateROI 180 
+cathedral.pgm 10_cathedral.pgm 3 0 0 500 500 lowPassROI 15 0 0 340 340 edgeSharpROI 60 0 0 300 300 rotateROI 270  
+cathedral.pgm 11_cathedral.pgm 3 100 100 400 400 highPassROI 40 0 0 300 300 edgeSharpROI 12 0 0 290 290 rotateROI 90 
+cathedral.pgm 12_cathedral.pgm 3 0 10 450 450 highPassROI 12 0 0 394 394 lowPassROI 35 0 0 310 310 rotateROI 90 
+cathedral.pgm 1_extra_credit.pgm bandStop 20 50
+baboon.ppm 2_extra_credit_LP_HUE.ppm colorLowPass 35 0 
+baboon.ppm 3_extra_credit_LP_SAT.ppm colorLowPass 35 1 
+baboon.ppm 4_extra_credit_LP_VAL.ppm colorLowPass 35 2 
+baboon.ppm 5_extra_credit_HP_HUE.ppm colorHighPass 40 0 
+baboon.ppm 6_extra_credit_HP_SAT.ppm colorHighPass 40 1 
+baboon.ppm 7_extra_credit_HP_VAL.ppm colorHighPass 40 2 
+baboon.ppm 8_extra_credit_BS_HUE.ppm colorBandStop 25 55 0 
+baboon.ppm 9_extra_credit_BS_SAT.ppm colorBandStop 25 55 1 
+baboon.ppm 10_extra_credit_BS_VAL.ppm colorBandStop 25 55 2 
+portrait.pgm report_0.pgm 1 0 0 512 512 invFourierTransROI  
 portrait.pgm report_1.pgm fourierTrans 
 portrait.pgm report_2.pgm lowPass 20 
 portrait.pgm report_3.pgm lowPass 50 

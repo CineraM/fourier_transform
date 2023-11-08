@@ -61,21 +61,24 @@ cathedral.pgm cathedral_BS.pgm bandStop 50 200
 
 /// report 
 
-portrait.pgm portrait_FT1.pgm 1 0 0 300 300 fourierTransROI 
-portrait.pgm portrait_FT2.pgm 1 0 0 300 300 fourierTransWrapper 
-portrait.pgm portraitLP_20_1.pgm 1 0 0 300 300 lowPassROI 20 
-portrait.pgm portraitLP_20_2.pgm 1 0 0 300 300 lowPassWrapper 20 
-portrait.pgm portraitHP_100_1.pgm 1 0 0 300 300 highPassROI 100 
-portrait.pgm portraitHP_100_2.pgm 1 0 0 300 300 highPassWrapper 100 
-cathedral.pgm cathedral_ES_30_1.pgm 1 0 0 512 256 edgeSharpROI 30 
-cathedral.pgm cathedral_ES_30_1.pgm 1 0 0 512 256 edgeSharpWrapper 30 
-cathedral.pgm cathedral_BS.pgm bandStop 50 200 
-baboon.ppm baboon_LP_HUE.ppm colorLowPass 20 0 
-baboon.ppm baboon_LP_SAT.ppm colorLowPass 20 1 
-baboon.ppm baboon_LP_VAL.ppm colorLowPass 20 2 
-baboon.ppm baboon_HP_HUE.ppm colorHighPass 50 0 
-baboon.ppm baboon_HP_SAT.ppm colorHighPass 50 1 
-baboon.ppm baboon_HP_VAL.ppm colorHighPass 50 2 
-baboon.ppm baboon_BS_HUE.ppm colorBandStop 50 200 0 
-baboon.ppm baboon_BS_SAT.ppm colorBandStop 50 200 1 
-baboon.ppm baboon_BS_VAL.ppm colorBandStop 50 200 2 
+
+portrait.pgm report_0.pgm 1 0 0 512 512 invFourierTransROI  
+portrait.pgm report_1.pgm fourierTrans 
+portrait.pgm report_2.pgm lowPass 20 
+portrait.pgm report_3.pgm lowPass 50 
+portrait.pgm report_4.pgm highPass 10 
+portrait.pgm report_5.pgm highPass 25 
+cathedral.pgm report_6.pgm bandStop 20 50
+cathedral.pgm report_7.pgm lowPass 20 
+cathedral.pgm report_8.pgm highPass 50
+cathedral.pgm report_8.pgm highPass 50
+cathedral.pgm report_9.pgm 1 0 0 512 256 edgeSharpWrapper 60
+baboon.ppm report_10_LP_HUE.ppm colorLowPass 35 0 
+baboon.ppm report_11_LP_SAT.ppm colorLowPass 35 1 
+baboon.ppm report_12_LP_VAL.ppm colorLowPass 35 2 
+baboon.ppm report_13_HP_HUE.ppm colorHighPass 40 0 
+baboon.ppm report_14_HP_SAT.ppm colorHighPass 40 1 
+baboon.ppm report_15_HP_VAL.ppm colorHighPass 40 2 
+baboon.ppm report_16_BS_HUE.ppm colorBandStop 25 55 0 
+baboon.ppm report_17_BS_SAT.ppm colorBandStop 25 55 1 
+baboon.ppm report_18_BS_VAL.ppm colorBandStop 25 55 2 

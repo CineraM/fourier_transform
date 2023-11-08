@@ -290,6 +290,10 @@ int main (int argc, char** argv)
 			{
 				utility::fourierTransROI(temp, tgt, outfile, roi_i, roi_j, roi_i_size, roi_j_size);
 			}
+			else if (strcmp(pch,"invFourierTransROI")==0)
+			{
+				utility::lowPassROI(temp, tgt, outfile, 100, roi_i, roi_j, roi_i_size, roi_j_size);
+			}
 			else if (strcmp(pch,"lowPassWrapper")==0)
 			{
 				XD
