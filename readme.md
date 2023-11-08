@@ -1,9 +1,8 @@
-# HW 2 Grey Level and Color - Parameters
-
+# HW 3 Fourier Transform and Frequency filteting - Parameters
 
 ## How to compile
 
-     cd /code/iptools/;
+    cd /code/iptools/;
      make clean;
      make;
      cd ../project/;
@@ -12,15 +11,13 @@
      cd bin/;
      ./iptool parameters.txt;
 
-
-
 ## Single operations
 
 - source_img   outut_img  operation operation input (if needed)
 
 Example:
 
-- baboon.pgm baboon_1.pgm  stretch 0 255
+- baboon.pgm baboon_1.pgm  lowPass 30
 
 ## ROI parameters
 
@@ -42,4 +39,4 @@ example:
 
 Example:
 
-- baboon.pgm baboon_3_1.pgm 2 0 0 400 500 stretchROI 0 255 140 0 0 250 250 equalizeGreyROI
+- portrait.pgm sample_output.pgm 3 0 0 500 500 lowPassROI 15 0 0 340 340 edgeSharpROI 60 0 0 300 300 rotateROI 270
